@@ -1,8 +1,10 @@
 import sys
 import fitz  # pymupdf
 import os
+from pathlib import Path
 import ctypes
-import winreg
+from win32com.client import Dispatch
+
 
 SCRIPT_PATH = os.path.abspath(sys.argv[0])
 
@@ -30,7 +32,10 @@ def merge_pdfs(files):
 
     # Get the directory of the first PDF
     output_dir = os.path.dirname(files[0])
-    output_file = os.path.join(output_dir, "merged.pdf")
+
+    # Get the output file name from the first PDF
+    output_file_name = os.path.basename(files[0]).replace(".pdf", "_merged.pdf")
+    output_file = os.path.join(output_dir, output_file_name)
 
     doc = fitz.open()
     for pdf in files:
@@ -50,52 +55,52 @@ def merge_pdfs(files):
     doc.save(output_file)
     doc.close()
 
-    show_message_box(f"Merged successfully: {output_file}", "Success")
+    # show_message_box(f"Merged successfully: {output_file}", "Success")
     os.startfile(output_file)
 
 
-def install_context_menu():
-    """Add 'Merge PDFs' option to Windows Explorer right-click menu."""
-    key_path = r"Software\Classes\SystemFileAssociations\.pdf\Shell\MergePDF"
-    command = f'"{SCRIPT_PATH}" "%*"'
-
-    try:
-        with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "Merge PDFs")
-
-        with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path + r"\Command") as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, f'cmd /c "{command}"')
-
-        print("Context menu entry added. Right-click PDFs to merge.")
-    except PermissionError:
-        print("Run as Administrator to install the context menu.")
+def get_sendto_folder():
+    """Retrieve the path to the SendTo folder."""
+    return Path(os.path.expandvars(r"%APPDATA%\Microsoft\Windows\SendTo"))
 
 
-def uninstall_context_menu():
-    """Remove the context menu entry."""
-    key_path = r"Software\Classes\SystemFileAssociations\.pdf\Shell\MergePDF"
+def create_shortcut(target, shortcut_name):
+    """Create a shortcut in the SendTo folder."""
+    sendto_folder = get_sendto_folder()
+    shortcut_path = sendto_folder / f"{shortcut_name}.lnk"
 
-    try:
-        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, key_path + r"\Command")
-        winreg.DeleteKey(winreg.HKEY_CURRENT_USER, key_path)
-        print("Context menu entry removed.")
-    except FileNotFoundError:
-        print("Context menu entry not found.")
+    shell = Dispatch("WScript.Shell")
+    shortcut = shell.CreateShortcut(str(shortcut_path))
+    shortcut.TargetPath = target
+    shortcut.WorkingDirectory = str(Path(target).parent)
+    shortcut.Save()
+
+    return shortcut_path
+
+
+def install_sendto_shortcut():
+    """Install the SendTo shortcut for merge_pdfs.exe."""
+    exe_path = Path(sys.argv[0]).resolve()
+
+    shortcut = create_shortcut(str(exe_path), "Merge PDFs")
+
+    show_message_box(f"Shortcut added: {shortcut}", "Installation Complete")
+
+
+def uninstall_sendto_shortcut():
+    """Remove the SendTo shortcut for merge_pdfs.exe."""
+    sendto_folder = get_sendto_folder()
+    shortcut_path = sendto_folder / "Merge PDFs.lnk"
+
+    if shortcut_path.exists():
+        shortcut_path.unlink()
+        show_message_box("Shortcut removed successfully.", "Uninstall Complete")
+    else:
+        show_message_box("Shortcut not found.", "Uninstall Error")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        arg = sys.argv[1]
-        if arg == "--install":
-            install_context_menu()
-        elif arg == "--uninstall":
-            uninstall_context_menu()
-        else:
-            show_message_box(
-                f"File(s) selected: {', '.join(sys.argv[1:])}", "Selected Files"
-            )
-            merge_pdfs(sys.argv[1:])
-    else:
+    if len(sys.argv) <= 1:
         show_message_box(
             "No files selected. Please select PDF files to merge.", "No Files"
         )
@@ -103,3 +108,16 @@ if __name__ == "__main__":
         print("  merge_pdfs.py file1.pdf file2.pdf [output.pdf]  # Merge PDFs")
         print("  merge_pdfs.py --install  # Add context menu entry")
         print("  merge_pdfs.py --uninstall  # Remove context menu entry")
+        sys.exit(0)
+
+    arg = sys.argv[1]
+    if arg == "--install":
+        install_sendto_shortcut()
+        sys.exit(0)
+
+    if arg == "--uninstall":
+        uninstall_sendto_shortcut()
+        sys.exit(0)
+
+    # show_message_box(f"File(s) selected: {', '.join(sys.argv[1:])}", "Selected Files")
+    merge_pdfs(sys.argv[1:])
