@@ -4,7 +4,8 @@ import os
 from pathlib import Path
 import ctypes
 from win32com.client import Dispatch
-
+import tkinter as tk
+from tkinter import messagebox
 
 SCRIPT_PATH = os.path.abspath(sys.argv[0])
 
@@ -99,15 +100,55 @@ def uninstall_sendto_shortcut():
         show_message_box("Shortcut not found.", "Uninstall Error")
 
 
+def show_install_options():
+    """Show a custom dialog box with Install, Uninstall, and Cancel options."""
+
+    def on_install():
+        install_sendto_shortcut()
+        root.destroy()
+
+    def on_uninstall():
+        uninstall_sendto_shortcut()
+        root.destroy()
+
+    def on_cancel():
+        root.destroy()
+
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+
+    # Create a custom dialog box
+    dialog = tk.Toplevel(root)
+    dialog.title("Merge PDFs Setup")
+    dialog.geometry("300x150")
+    dialog.resizable(False, False)
+
+    label = tk.Label(dialog, text="What would you like to do?", font=("Arial", 12))
+    label.pack(pady=20)
+
+    button_frame = tk.Frame(dialog)
+    button_frame.pack(pady=10)
+
+    install_button = tk.Button(
+        button_frame, text="Install", command=on_install, width=10
+    )
+    install_button.grid(row=0, column=0, padx=5)
+
+    uninstall_button = tk.Button(
+        button_frame, text="Uninstall", command=on_uninstall, width=10
+    )
+    uninstall_button.grid(row=0, column=1, padx=5)
+
+    cancel_button = tk.Button(button_frame, text="Cancel", command=on_cancel, width=10)
+    cancel_button.grid(row=0, column=2, padx=5)
+
+    dialog.protocol("WM_DELETE_WINDOW", on_cancel)  # Handle window close button
+    root.mainloop()
+
+
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
-        show_message_box(
-            "No files selected. Please select PDF files to merge.", "No Files"
-        )
-        print("Usage:")
-        print("  merge_pdfs.py file1.pdf file2.pdf [output.pdf]  # Merge PDFs")
-        print("  merge_pdfs.py --install  # Add context menu entry")
-        print("  merge_pdfs.py --uninstall  # Remove context menu entry")
+        show_install_options()
         sys.exit(0)
 
     arg = sys.argv[1]
