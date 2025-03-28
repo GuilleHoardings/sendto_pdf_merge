@@ -5,7 +5,7 @@ from pathlib import Path
 import ctypes
 from win32com.client import Dispatch
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk
 
 SCRIPT_PATH = os.path.abspath(sys.argv[0])
 
@@ -120,29 +120,73 @@ def show_install_options():
     # Create a custom dialog box
     dialog = tk.Toplevel(root)
     dialog.title("Merge PDFs Setup")
-    dialog.geometry("300x150")
+    dialog.geometry("270x110")
     dialog.resizable(False, False)
 
-    label = tk.Label(dialog, text="What would you like to do?", font=("Arial", 12))
-    label.pack(pady=20)
+    # Set a consistent background color
+    bg_color = "#f0f0f0"  # Light gray (default for ttk)
+    dialog.configure(bg=bg_color)
 
-    button_frame = tk.Frame(dialog)
-    button_frame.pack(pady=10)
-
-    install_button = tk.Button(
-        button_frame, text="Install", command=on_install, width=10
+    # Add a title label
+    label = ttk.Label(
+        dialog,
+        text="Merge PDFs Setup",
+        font=("Segoe UI", 12, "bold"),  # Slightly smaller font
+        anchor="center",
+        background=bg_color,
     )
-    install_button.grid(row=0, column=0, padx=5)
+    label.pack(pady=(10, 5))  # Reduced padding
 
-    uninstall_button = tk.Button(
-        button_frame, text="Uninstall", command=on_uninstall, width=10
+    # Add a description label
+    description = ttk.Label(
+        dialog,
+        text="What would you like to do?",
+        font=("Segoe UI", 10),
+        anchor="center",
+        background=bg_color,
+    )
+    description.pack(pady=(0, 10))  # Reduced padding
+
+    # Create a frame for buttons with consistent background
+    button_frame = ttk.Frame(dialog)
+    button_frame.pack(pady=5)  # Reduced padding
+
+    # Style and add buttons
+    install_button = ttk.Button(
+        button_frame,
+        text="Install",
+        command=on_install,
+        width=10,  # Slightly smaller width
+    )
+    install_button.grid(row=0, column=0, padx=5)  # Reduced horizontal padding
+
+    uninstall_button = ttk.Button(
+        button_frame,
+        text="Uninstall",
+        command=on_uninstall,
+        width=10,
     )
     uninstall_button.grid(row=0, column=1, padx=5)
 
-    cancel_button = tk.Button(button_frame, text="Cancel", command=on_cancel, width=10)
+    cancel_button = ttk.Button(
+        button_frame,
+        text="Cancel",
+        command=on_cancel,
+        width=10,
+    )
     cancel_button.grid(row=0, column=2, padx=5)
 
-    dialog.protocol("WM_DELETE_WINDOW", on_cancel)  # Handle window close button
+    # Handle window close button
+    dialog.protocol("WM_DELETE_WINDOW", on_cancel)
+
+    # Center the dialog on the screen
+    dialog.update_idletasks()
+    width = dialog.winfo_width()
+    height = dialog.winfo_height()
+    x = (dialog.winfo_screenwidth() // 2) - (width // 2)
+    y = (dialog.winfo_screenheight() // 2) - (height // 2)
+    dialog.geometry(f"{width}x{height}+{x}+{y}")
+
     root.mainloop()
 
 
