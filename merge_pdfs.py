@@ -10,9 +10,15 @@ from tkinter import ttk
 SCRIPT_PATH = os.path.abspath(sys.argv[0])
 
 
-def show_message_box(message, title="Error"):
-    """Display an error message box."""
-    ctypes.windll.user32.MessageBoxW(0, message, title, 0x10)
+def show_message_box(message, title="Message", icon="info"):
+    """Display a message box with a specified icon."""
+    icons = {
+        "info": 0x40,  # Information icon
+        "warning": 0x30,  # Warning icon
+        "error": 0x10,  # Error icon
+    }
+    icon_flag = icons.get(icon, 0x40)  # Default to information icon
+    ctypes.windll.user32.MessageBoxW(0, message, title, icon_flag)
 
 
 def is_valid_pdf(file_path):
@@ -83,9 +89,9 @@ def install_sendto_shortcut():
     """Install the SendTo shortcut for merge_pdfs.exe."""
     exe_path = Path(sys.argv[0]).resolve()
 
-    shortcut = create_shortcut(str(exe_path), "Merge PDFs")
+    create_shortcut(str(exe_path), "Merge PDFs")
 
-    show_message_box(f"Shortcut added: {shortcut}", "Installation Complete")
+    show_message_box("Shortcut added successfully!", "Success", icon="info")
 
 
 def uninstall_sendto_shortcut():
@@ -95,9 +101,11 @@ def uninstall_sendto_shortcut():
 
     if shortcut_path.exists():
         shortcut_path.unlink()
-        show_message_box("Shortcut removed successfully.", "Uninstall Complete")
+        show_message_box(
+            "Shortcut removed successfully.", "Uninstall Complete", icon="info"
+        )
     else:
-        show_message_box("Shortcut not found.", "Uninstall Error")
+        show_message_box("Shortcut not found.", "Uninstall Error", icon="error")
 
 
 def show_install_options():
