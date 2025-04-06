@@ -115,15 +115,10 @@ the steps:
     ```
 3. Navigate to the directory containing `merge_pdfs.py` and run:
 4. ```bash
-   pyinstaller --onefile merge_pdfs.py
+   pyinstaller --onefile --icon=icon.ico --add-data "icon.ico;." --windowed merge_pdfs.py
    ```
 5. This will create a standalone executable in the `dist` folder.
 6. You can then distribute this executable without requiring Python or any dependencies to be installed on the target machine.
 7. Make sure to test the executable on a clean machine to ensure it works as expected.
 8. You can also customize the PyInstaller spec file to include additional files or resources if needed.
 9. For more advanced usage, refer to the [PyInstaller documentation](https://pyinstaller.readthedocs.io/en/stable/).
-10. You can also use the `--icon` option to specify a custom icon for the executable:
-11. ```bash
-    pyinstaller --onefile --icon=your_icon.ico merge_pdfs.py
-    ```
-12. This will embed the specified icon into the executable file.

@@ -10,6 +10,12 @@ from tkinter import ttk
 SCRIPT_PATH = os.path.abspath(sys.argv[0])
 
 
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+
 def show_message_box(message, title="Message", icon="info"):
     """Display a message box with a specified icon."""
     icons = {
@@ -127,6 +133,8 @@ def show_install_options():
 
     # Create a custom dialog box
     dialog = tk.Toplevel(root)
+    icon_path = resource_path("icon.ico")
+    dialog.iconbitmap(icon_path)
     dialog.title("Merge PDFs Setup")
     dialog.geometry("270x110")
     dialog.resizable(False, False)
