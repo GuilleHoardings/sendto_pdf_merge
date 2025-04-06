@@ -6,6 +6,8 @@
 
 SendTo PDF Merge is a Windows application that allows you to easily combine multiple PDF files into a single document. It integrates with the Windows "Send To" menu for quick access and provides a simple interface for installation and usage.
 
+![SendTo PDF Merge icon](sendto_pdf_merge_icon.png)
+
 ## Features
 
 - Merge multiple PDF files with a simple right-click
