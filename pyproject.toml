@@ -1,5 +1,5 @@
 [project]
-name = "merge-pdfs"
+name = "sendto_pdf_merge"
 version = "0.1.0"
 description = "Adds a context menu to Windows to merge PDFs"
 readme = "README.md"

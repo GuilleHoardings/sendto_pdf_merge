@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['merge_pdfs.py'],
+    ['sendto_pdf_merge.py'],
     pathex=[],
     binaries=[],
     datas=[('icon.ico', '.')],
@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='merge_pdfs',
+    name='sendto_pdf_merge',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

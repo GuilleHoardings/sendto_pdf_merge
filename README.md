@@ -1,10 +1,10 @@
-# PDF Merger
+# SendTo PDF Merge
 
-A simple utility to merge multiple PDF files into a single document.
+**SendTo PDF Merge** is a small utility that lets you merge PDF files directly from the Windows "Send to" menu.
 
 ## Overview
 
-PDF Merger is a Windows application that allows you to easily combine multiple PDF files into a single document. It integrates with the Windows "Send To" menu for quick access and provides a simple interface for installation and usage.
+SendTo PDF Merge is a Windows application that allows you to easily combine multiple PDF files into a single document. It integrates with the Windows "Send To" menu for quick access and provides a simple interface for installation and usage.
 
 ## Features
 
@@ -16,17 +16,17 @@ PDF Merger is a Windows application that allows you to easily combine multiple P
 
 ## Installation
 
-There are two ways to install PDF Merger:
+There are two ways to install SendTo PDF Merge:
 
 ### Method 1: Using the Setup Interface
 
 1. Run the application without any arguments:
    ```bash
-   pdf_merger.exe
+   sendto_pdf_merge.exe
    ```
    or
    ```bash
-   python merge_pdfs.py
+   python sendto_pdf_merge.py
    ```
 
 2. In the setup dialog that appears, click "Install" to add the application to your Windows "Send To" menu.
@@ -36,12 +36,16 @@ There are two ways to install PDF Merger:
 Run the application with the `--install` flag:
 
 ```bash
-pdf_merger.exe --install
+sendto_pdf_merge.exe --install
 ```
 or
 ```bash
-python merge_pdfs.py --install
+python sendto_pdf_merge.py --install
 ```
+
+**Important:** It does not matter which method you use, but you cannot remove
+the .exe file from the directory where you installed it. The application will
+not work if you do so.
 
 ## Usage
 
@@ -56,11 +60,11 @@ python merge_pdfs.py --install
 
 1. Run the application without any arguments:
    ```bash
-   pdf_merger.exe
+   sendto_pdf_merge.exe
    ```
    or
    ```bash
-   python merge_pdfs.py
+   python sendto_pdf_merge.py
    ```
 
 2. In the setup dialog that appears, click "Uninstall" to remove the application from your Windows "Send To" menu.
@@ -70,11 +74,11 @@ python merge_pdfs.py --install
 Run the application with the `--uninstall` flag:
 
 ```bash
-pdf_merger.exe --uninstall
+sendto_pdf_merge.exe --uninstall
 ```
 or
 ```bash
-python merge_pdfs.py --uninstall
+python sendto_pdf_merge.py --uninstall
 ```
 
 ## Requirements
@@ -113,9 +117,9 @@ the steps:
 2. ```bash
    pip install pyinstaller
     ```
-3. Navigate to the directory containing `merge_pdfs.py` and run:
+3. Navigate to the directory containing `sendto_pdf_merge.py` and run:
 4. ```bash
-   pyinstaller --onefile --icon=icon.ico --add-data "icon.ico;." --windowed merge_pdfs.py
+   pyinstaller --onefile --icon=icon.ico --add-data "icon.ico;." --windowed sendto_pdf_merge.py
    ```
 5. This will create a standalone executable in the `dist` folder.
 6. You can then distribute this executable without requiring Python or any dependencies to be installed on the target machine.
